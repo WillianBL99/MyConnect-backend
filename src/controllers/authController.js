@@ -1,6 +1,6 @@
+import { v4 as uuid } from "uuid";
 import bcrypt from "bcrypt";
 import dayjs from "dayjs";
-import { v4 as uuid } from "uuid";
 
 import db from "../db.js";
 
