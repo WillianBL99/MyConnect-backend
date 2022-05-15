@@ -10,3 +10,10 @@ export const postCartSchema = joi.object({
     price: joi.number().required(),
     _id: joi.string().required()
 });
+export const postHistoricSchema = joi.object({
+    email: joi.string().email().required(),
+    tittle: joi.string().required(),
+    qtd: joi.number().integer().required(),
+    total: joi.number().required(),
+    date: joi.string().required()
+});

@@ -46,7 +46,7 @@ export async function deleteCartProducts(req,res){
         const collection = db.collection("cart");
         if(!id){
             await collection.deleteMany({});
-            return res.sendStatus(200);;
+            return res.sendStatus(200);
         }
         const product = await collection.findOne({_id: new ObjectId(id)});
         if(!product)return res.status(404).send("product not found");
@@ -54,6 +54,35 @@ export async function deleteCartProducts(req,res){
         res.sendStatus(200);
     } catch (error) {
         console.log("Error get cartProducts.");
+        console.log(error);
+        return res.sendStatus(500);
+    }
+}
+export async function postHistoric (req,res){
+    const purchases = req.body;
+    try {
+        const collection = db.collection("historic");
+        //for(let i=0;i<purchases.length;i++){
+        //    await collection.insertOne(purchases[i]);
+        //}
+        await collection.insertMany(purchases);
+        res.sendStatus(201);
+    } catch (error) {
+        console.log("Error put historic.");
+        console.log(error);
+        return res.sendStatus(500);
+    }
+}
+export async function getHistoric(req,res){
+    const {email} =res.locals;
+    try {
+        console.log(email);
+        const collection = db.collection("historic");
+        const purchases = await collection.find({email}).toArray();
+        console.log(purchases);
+        res.status(200).send(purchases);
+    } catch (error) {
+        console.log("Error put historic.");
         console.log(error);
         return res.sendStatus(500);
     }
