@@ -64,7 +64,6 @@ export async function postHistoric (req,res){
     try {
         const insert = {...purchases, date:dayjs().format("DD/MM/YY")}
         const collection = db.collection("historic");
-        console.log(insert);
         await collection.insertOne(insert);
         res.sendStatus(201);
     } catch (error) {
@@ -76,10 +75,8 @@ export async function postHistoric (req,res){
 export async function getHistoric(req,res){
     const {email} =res.locals;
     try {
-        console.log(email);
         const collection = db.collection("historic");
         const purchases = await collection.find({email}).toArray();
-        console.log(purchases);
         res.status(200).send(purchases);
     } catch (error) {
         console.log("Error put historic.");
