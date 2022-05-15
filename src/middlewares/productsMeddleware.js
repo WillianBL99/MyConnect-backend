@@ -31,16 +31,11 @@ async function checkingSession(email, token) {
     };
 }
 export function postCartValidation(req, res, next) {
-    const { _id: id } = req.body;
     const validation = postCartSchema.validate(req.body, abortEarly);
     if (validation.error) {
         return res.status(422).send(validation.error.details.map(
             detail => `${detail.message} /`
         ));
-    };
-    const validId = ObjectId.isValid(id);
-    if (!validId && id !== "") {
-        return res.status(422).send("The product id is not valid.");
     };
     next();
 }
@@ -48,12 +43,9 @@ export function postCartValidation(req, res, next) {
 export function deleteCartValidation(req, res, next) {
     const id = req.body.selected;
     const validId = ObjectId.isValid(id);
-    if (validation.error) {
-        return res.status(422).send(validation.error.details.map(
-            detail => `${detail.message} /`
-        ));
+    if (!validId && id !== "") {
+        return res.status(422).send("The product id is not valid to delete.");
     };
-
     res.locals.id = id;
     next();
 }
@@ -62,7 +54,9 @@ export async function postHistoricValidation(req, res, next) {
     const titleValidation = Joi.string().required();
     const purchases = req.body;
     const { products } = purchases;
-    console.log(products,purchases);
+    if(!products){
+        return res.status(422).send("Array with products title required");
+    }
     const errorPurchases = [];
     products.forEach((product, index) => {
         const validation = titleValidation.validate(product, abortEarly);
@@ -77,20 +71,3 @@ export async function postHistoricValidation(req, res, next) {
     }
     next();
 }
-/* export async function postHistoricValidation(req, res, next) {
-    const purchases = req.body;
-    const errorPurchases =[];
-    purchases.forEach((purchase,index) => {
-        const validation = postHistoricSchema.validate(purchase, abortEarly);
-        if (validation.error) {
-            errorPurchases.push(validation.error.details.map(
-                detail => `object${index}: ${detail.message} /`
-            ));
-        };
-    });
-    if(errorPurchases.length>0){
-        return res.status(422).send(errorPurchases);
-    }
-    
-    next();
-} */
