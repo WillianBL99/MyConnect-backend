@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import dayjs from "dayjs";
 
 import db from "../db.js";
 
@@ -61,11 +62,10 @@ export async function deleteCartProducts(req,res){
 export async function postHistoric (req,res){
     const purchases = req.body;
     try {
+        const insert = {...purchases, date:dayjs().format("DD/MM/YY")}
         const collection = db.collection("historic");
-        //for(let i=0;i<purchases.length;i++){
-        //    await collection.insertOne(purchases[i]);
-        //}
-        await collection.insertMany(purchases);
+        console.log(insert);
+        await collection.insertOne(insert);
         res.sendStatus(201);
     } catch (error) {
         console.log("Error put historic.");

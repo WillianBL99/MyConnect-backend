@@ -3,8 +3,8 @@ import joi from "joi";
 const imageUrl=/^(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)$/;
 export const postCartSchema = joi.object({
     email: joi.string().email().required(),
-    image: joi.string().pattern(imageUrl).required(),
-    tittle: joi.string().required(),
+    img: joi.string().pattern(imageUrl).required(),
+    title: joi.string().required(),
     describe: joi.string().required(),
     qtd: joi.number().integer().required(),
     price: joi.number().required(),
@@ -12,8 +12,6 @@ export const postCartSchema = joi.object({
 });
 export const postHistoricSchema = joi.object({
     email: joi.string().email().required(),
-    tittle: joi.string().required(),
     qtd: joi.number().integer().required(),
-    total: joi.number().required(),
-    date: joi.string().required()
+    total: joi.number().required()
 });

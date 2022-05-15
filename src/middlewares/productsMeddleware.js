@@ -2,6 +2,7 @@ import db from "../db.js";
 import { ObjectId } from "mongodb";
 
 import { postCartSchema, postHistoricSchema } from "../schemas/productsSchema.js"
+import Joi from "joi";
 
 const abortEarly = { abortEarly: false };
 export async function tokenValidation(req, res, next) {
@@ -47,13 +48,36 @@ export function postCartValidation(req, res, next) {
 export function deleteCartValidation(req, res, next) {
     const id = req.body.selected;
     const validId = ObjectId.isValid(id);
-    if (!validId && id !== "") {
-        return res.status(422).send("The product id is not valid.");
+    if (validation.error) {
+        return res.status(422).send(validation.error.details.map(
+            detail => `${detail.message} /`
+        ));
     };
+
     res.locals.id = id;
     next();
 }
+
 export async function postHistoricValidation(req, res, next) {
+    const titleValidation = Joi.string().required();
+    const purchases = req.body;
+    const { products } = purchases;
+    console.log(products,purchases);
+    const errorPurchases = [];
+    products.forEach((product, index) => {
+        const validation = titleValidation.validate(product, abortEarly);
+        if (validation.error) {
+            errorPurchases.push(validation.error.details.map(
+                detail => `object${index}: ${detail.message} /`
+            ));
+        };
+    });
+    if (errorPurchases.length > 0) {
+        return res.status(422).send(errorPurchases);
+    }
+    next();
+}
+/* export async function postHistoricValidation(req, res, next) {
     const purchases = req.body;
     const errorPurchases =[];
     purchases.forEach((purchase,index) => {
@@ -69,4 +93,4 @@ export async function postHistoricValidation(req, res, next) {
     }
     
     next();
-}
+} */
