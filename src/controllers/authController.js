@@ -10,10 +10,10 @@ export async function signUp(req, res) {
     const sault = 10;
     const cryptPassword = bcrypt.hashSync(password, sault);
     await db.collection("users").insertOne({
-      name: name,
-      email: email,
-      password: cryptPassword,
-      img: img
+      name,
+      email,
+      password,
+      img
     });
     return res.sendStatus(201); // created
   } catch (error) {
