@@ -12,7 +12,7 @@ export async function signUp(req, res) {
     await db.collection("users").insertOne({
       name,
       email,
-      password,
+      password:cryptPassword,
       img
     });
     return res.sendStatus(201); // created
