@@ -5,8 +5,8 @@ import dotenv from "dotenv";
 import routes from "./routes/routes.js";
 
 const app = express();
-app.use(json());
 app.use(cors());
+app.use(json());
 
 dotenv.config();
 
