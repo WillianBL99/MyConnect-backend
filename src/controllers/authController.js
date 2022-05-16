@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import db from "../db.js";
 
 export async function signUp(req, res) {
-  const { name, email, password, image } = req.body;
+  const { name, email, password, img } = req.body;
   try {
     const sault = 10;
     const cryptPassword = bcrypt.hashSync(password, sault);
@@ -13,7 +13,7 @@ export async function signUp(req, res) {
       name: name,
       email: email,
       password: cryptPassword,
-      image: image
+      img: img
     });
     return res.sendStatus(201); // created
   } catch (error) {
