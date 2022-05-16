@@ -25,7 +25,7 @@ async function checkingSession(email, token) {
             return "sessão não autorizada";
         };
     } catch (error) {
-        console.log("Error checking session.");
+        console.log("error checking session.");
         console.log(error);
         return res.sendStatus(500);
     };
