@@ -5,31 +5,44 @@ import { postCartSchema, postHistoricSchema } from "../schemas/productsSchema.js
 import Joi from "joi";
 
 const abortEarly = { abortEarly: false };
-export async function tokenValidation(req, res, next) {
-    const { authorization, email } = req.headers;
-    const token = authorization?.replace("Bearer ", "").trim();
-    res.locals.email = email;
-    if (!token || !email) {
-        return res.status(401).send("requisição  não autorizada aqui");
-    }
-    const errorSession = await checkingSession(email, token);
-    if (errorSession) return res.status(401).send(errorSession);
-    next();
-}
 
-async function checkingSession(email, token) {
+export async function tokenValidation(req, res, next) {
+    const { authorization, email } = req.headers;    
     try {
-        const collection = db.collection("sessions");
-        const session = await collection.findOne({ email });
-        if (!session || session?.token !== token) {
-            return "sessão não autorizada";
+        const token = authorization?.replace("Bearer ", "");
+        if (!token || !email) {
+            return res.status(401).send("requisição  não autorizada.");
         };
-    } catch (error) {
-        console.log("error checking session.");
+
+        const errorMessage = await checkingSession(email, token, res);
+        if (errorMessage) return res.status(401).send(errorMessage);
+        
+        res.locals.email = email;
+        next();
+
+    } catch(error){
+        console.log("error token validation.");
         console.log(error);
         return res.sendStatus(500);
+    }
+}
+
+async function checkingSession(email, token, res) {
+    try {
+        const collection = db.collection("sessions");
+        const session = await collection.findOne({ token });
+
+        if (!session) {
+            return "sessão não autorizada";
+        };
+
+    } catch (error) {
+        res.sendStatus(500);
+        console.log("error checkingSession.", error);
+        return error;
     };
 }
+
 export function postCartValidation(req, res, next) {
     const validation = postCartSchema.validate(req.body, abortEarly);
     if (validation.error) {
