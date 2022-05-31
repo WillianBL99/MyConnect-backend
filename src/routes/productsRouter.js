@@ -8,19 +8,16 @@ import {
 } from "../middlewares/productsMeddleware.js";
 
 const productsRouter = Router();
+productsRouter.use(tokenValidation);
 
-productsRouter.get("/products", tokenValidation, getProducts);
-productsRouter.get("/cart", tokenValidation, getCartProducts);
-productsRouter.post(
-    "/cart", tokenValidation, postCartValidation, postCartProducts
-);
-productsRouter.delete(
-    "/cart", tokenValidation, deleteCartValidation, deleteCartProducts
-);
-productsRouter.post(
-    "/historic", tokenValidation, postHistoricValidation, postHistoric
-);
-productsRouter.get("/historic", tokenValidation, getHistoric);
+productsRouter.get("/products", getProducts);
+
+productsRouter.get("/cart", getCartProducts);
+productsRouter.post("/cart", postCartValidation, postCartProducts);
+productsRouter.delete("/cart", deleteCartValidation, deleteCartProducts);
+
+productsRouter.get("/historic", getHistoric);
+productsRouter.post("/historic", postHistoricValidation, postHistoric);
 
 export default productsRouter;
 

@@ -8,6 +8,7 @@ export async function getProducts(req,res){
         const collection = db.collection("products");
         const products = await collection.find().toArray();
         res.status(200).send(products);
+
     } catch (error) {
         console.log("Error get products.");
         console.log(error);
@@ -21,6 +22,7 @@ export async function postCartProducts(req,res){
         const collection = db.collection("cart");
         await collection.insertOne(product);
         res.sendStatus(201);
+        
     } catch (error) {
         console.log("Error get products.");
         console.log(error);
