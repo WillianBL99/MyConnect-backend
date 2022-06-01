@@ -33,8 +33,11 @@ async function checkingSession(token, res) {
         const session = await collection.findOne({ token });
 
         if (!session) {
+            console.log('Session expired')
             return "Session expired";
         };
+
+        return undefined;
 
     } catch (error) {
         res.sendStatus(500);
