@@ -14,7 +14,7 @@ export async function tokenValidation(req, res, next) {
             return res.status(401).send("requisição  não autorizada.");
         };
 
-        const errorMessage = await checkingSession(email, token, res);
+        const errorMessage = await checkingSession(token, res);
         if (errorMessage) return res.status(401).send(errorMessage);
         
         res.locals.email = email;
@@ -27,13 +27,13 @@ export async function tokenValidation(req, res, next) {
     }
 }
 
-async function checkingSession(email, token, res) {
+async function checkingSession(token, res) {
     try {
         const collection = db.collection("sessions");
         const session = await collection.findOne({ token });
 
         if (!session) {
-            return "sessão não autorizada";
+            return "Session expired";
         };
 
     } catch (error) {
