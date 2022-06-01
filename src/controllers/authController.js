@@ -28,15 +28,18 @@ export async function signIn(req, res) {
   const user = res.locals.user;
   try {
     const token = uuid();
-    sessionControl(email,token);
+    sessionControl(email);
+
     await db.collection("sessions").insertOne({
       email: email,
       token: token,
       time: dayjs().format("DD/MM/YYYY h:mm:ss"),
     });
+
     delete user.password;
     delete user._id;
     res.status(200).send({ ...user, token });
+    
   } catch (error) {
     console.log("Error recovering user.");
     console.log(error);
@@ -59,13 +62,16 @@ export async function signOut(req, res) {
   }
 }
 
-async function sessionControl(email,token) {
+async function sessionControl(email) {
   try {
     const oldSession = await db.collection("sessions").findOne({ email });
+
     if (oldSession) {
+      delete oldSession._id;
       await db.collection("oldSessions").insertOne(oldSession);
       await db.collection("sessions").deleteOne({ email });
     }
+
   } catch (error) {
     console.log("Error session definition.");
     console.log(error);
